@@ -1,6 +1,7 @@
 #include <util/delay.h>
 #include <avr/io.h>
 #include <stdio.h>
+#include "UART.h"
 
 char pin_led = 3;
 const unsigned char led_mask = (1 << pin_led);
@@ -8,6 +9,8 @@ char pin_botao = 4;
 const unsigned char botao_mask = (1 << pin_botao);
 //bool led_state = 0;
 //unsigned long tempo = 1000;
+
+UART uart;
 
 void acende_led(){
 	PORTB = PORTB | led_mask;
@@ -40,6 +43,7 @@ void setup(){
 //}
 
 void loop(){
+	uart.put('a');
 	//if((PINB & (1<<PB4))) acende_led();
 	if(ler_botao()){
 		//printf("Acendendo led");
