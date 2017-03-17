@@ -10,7 +10,8 @@ const unsigned char botao_mask = (1 << pin_botao);
 //bool led_state = 0;
 //unsigned long tempo = 1000;
 
-UART uart;
+UART uart(19200,UART::DATABITS_8,UART::PARITY_NONE,UART::STOPBITS_1);
+//UART uart;
 
 void acende_led(){
 	PORTB = PORTB | led_mask;

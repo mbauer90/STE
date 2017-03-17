@@ -8,15 +8,33 @@
 #include "UART.h"
 #include <avr/io.h>
 
-UART::UART(int bd, int db, int pr, int sb)
+UART::UART(unsigned long bd, DataBits_t db, ParityBits_t pr, StopBits_t sb)
 : _baudrate(bd), _databits(db), _paridade(pr), _stopbits(sb)
 {
 	//Configura o baud_rate
 	UBRR0 = (F_CPU / (16ul * this->_baudrate)) -1;
 	//Liga TX e RX
 	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+
+	//Set databits
+	if(_databits == DATABITS_9){
+		//UCSR0B = (UCSR0B & ~(1 << UCSZ02)) | (_databits << UCSZ02);
+	}else{
+		UCSR0C = (UCSR0C & ~(3 << UCSZ00)) | (_databits << UCSZ00);
+	}
+
+
+	//Set parity
+	UCSR0C = (UCSR0C & ~(3 << UPM00)) | (_paridade << UPM00);
+
+	//Set stopbits
+	//unsigned char reg = UCSR0C; //read
+	//reg = (reg & ~(1 << USBS0)) | (_stopbits << USBS0); //modify
+	//UCSR0C = reg; //update
+	UCSR0C = (UCSR0C & ~(1 << USBS0)) | (_stopbits << USBS0);
+
 	//Configura o frame para 8N1
-	UCSR0C = (3<<UCSZ00);
+	//UCSR0C = (3<<UCSZ00);
 }
 
 //UART::~UART() {
