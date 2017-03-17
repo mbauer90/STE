@@ -43,7 +43,9 @@ void setup(){
 //}
 
 void loop(){
-	uart.put('a');
+	//uart.put('a');
+	uart.put(uart.get() + 1);
+
 	//if((PINB & (1<<PB4))) acende_led();
 	if(ler_botao()){
 		//printf("Acendendo led");
