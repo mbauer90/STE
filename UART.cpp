@@ -54,3 +54,10 @@ unsigned char UART::get(){
 	//Retorna dado
 	return UDR0;
 }
+
+void  UART::puts(const char * str){
+	while(*str != '\0'){
+		this->put(*str);
+		str++;
+	}
+}

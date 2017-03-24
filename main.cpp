@@ -1,17 +1,20 @@
-//#include <util/delay.h>
+#include <util/delay.h>
 #include <avr/io.h>
 #include <stdio.h>
 #include "UART.h"
 #include "GPIO.h"
+#include "Timer.h"
 
 //char pin_led = 3;
 //char pin_botao = 4;
+//UART uart;
+UART uart(19200,UART::DATABITS_8,UART::PARITY_NONE,UART::STOPBITS_1);
 
 GPIO led(11,GPIO::OUTPUT);
 GPIO botao(12,GPIO::INPUT);
 
-UART uart(19200,UART::DATABITS_8,UART::PARITY_NONE,UART::STOPBITS_1);
-//UART uart;
+Timer timer(1000);
+char message[8];
 
 void acende_led(){
 	//PORTB = PORTB | led_mask;
@@ -28,14 +31,6 @@ bool ler_botao(){
 	return botao.get();
 }
 
-
-//void setup(){
-////	//DDRB = 0x20;
-////	//pinMode(pin, OUTPUT);
-//	DDRB = DDRB | led_mask;
-//	DDRB = DDRB & ~botao_mask;
-//}
-
 void loop(){
 	//uart.put('a');
 	//uart.put(uart.get() + 1);
@@ -49,6 +44,15 @@ void loop(){
 		//printf("Apagando led");
 		apaga_led();
 	}
+
+
+	//sprintf(message, "LED: %d\n",botao.get());
+	//uart.puts(message);
+	//_delay_ms(100);
+//
+	sprintf(message, "Timer: %d\n",timer.millis());
+	uart.puts(message);
+	//_delay_ms(100);
 
 }
 

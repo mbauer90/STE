@@ -38,7 +38,7 @@ public:
 	//virtual ~UART();
 	void put(unsigned char dado);
 	unsigned char get();
-	void puts(char * str);
+	void puts(const char * str);
 
 private:
 	unsigned long _baudrate;
