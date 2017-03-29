@@ -12,27 +12,53 @@
 unsigned long long Timer::_ticks = 0;
 
 Timer::Timer(Hertz freq) {
+
+	freq2 = freq;
+	int div;
+
 	TCCR0A = 0x00; //normal operation
-	TCCR0B = 0x05; //div 1024
 	TIMSK0 = 0X01; //Liga interrupcao de overflow
-	TCNT0 = 0xF0;
+
+	if((freq >= 62) and (freq <= 15000)){
+		TCCR0B = 0x05; //divisor 1024
+		div = 1024;
+	}else if((freq > 15000) and (freq <= 62000)){
+		TCCR0B = 0x04; //divisor 256
+		div = 256;
+	}else if((freq > 62000) and (freq <= 250000)){
+		TCCR0B = 0x03; //divisor 64
+		div = 64;
+	}
+	long int freqtimer = F_CPU / div;
+	int ciclos = freqtimer / freq;
+	TCNT0 = 0xFF - ciclos;
+	//TCNT0 = 0xF0;
 }
 
 Milliseconds Timer::millis(){
 	//versao errada
-	isr_handler();
-	return _ticks;
+	Milliseconds t = micros() / 1000;
+	return t;
+	//return _ticks;
 }
 
 Microseconds Timer::micros(){
-
+	return (_ticks * (1000000 / freq2));
 }
 
 void Timer::delay(Milliseconds ms){
-
+	this->udelay(ms*1000);
 }
 
 void Timer::udelay(Microseconds us){
+
+
+	Microseconds start = micros();
+	Microseconds t = start;
+
+	while(t <= start + us){
+		t = micros();
+	}
 
 }
 

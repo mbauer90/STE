@@ -1,12 +1,11 @@
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include <avr/io.h>
 #include <stdio.h>
 #include "UART.h"
 #include "GPIO.h"
 #include "Timer.h"
 
-//char pin_led = 3;
-//char pin_botao = 4;
 //UART uart;
 UART uart(19200,UART::DATABITS_8,UART::PARITY_NONE,UART::STOPBITS_1);
 
@@ -31,6 +30,10 @@ bool ler_botao(){
 	return botao.get();
 }
 
+void setup(){
+	sei();
+}
+
 void loop(){
 	//uart.put('a');
 	//uart.put(uart.get() + 1);
@@ -50,14 +53,16 @@ void loop(){
 	//uart.puts(message);
 	//_delay_ms(100);
 //
+	timer.delay(1000);
 	sprintf(message, "Timer: %d\n",timer.millis());
+	//sprintf(message, "Timer: %ull\n",timer.micros());
 	uart.puts(message);
 	//_delay_ms(100);
 
 }
 
 int main(){
-	//setup();
+	setup();
 
 	while(true){
 		loop();
