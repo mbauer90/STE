@@ -5,6 +5,7 @@
 #include "UART.h"
 #include "GPIO.h"
 #include "Timer.h"
+#include "FIFO.h"
 
 //UART uart;
 UART uart(19200,UART::DATABITS_8,UART::PARITY_NONE,UART::STOPBITS_1);

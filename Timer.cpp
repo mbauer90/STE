@@ -10,10 +10,13 @@
 #include <avr/interrupt.h>
 
 unsigned long long Timer::_ticks = 0;
+Timer * Timer::__singleton  = 0;
 
-Timer::Timer(Hertz freq) {
+Timer::Timer(Hertz f) {
 
-	freq2 = freq;
+	__singleton = this;
+
+	freq = f;
 	int div;
 
 	TCCR0A = 0x00; //normal operation
@@ -30,7 +33,8 @@ Timer::Timer(Hertz freq) {
 		div = 64;
 	}
 	long int freqtimer = F_CPU / div;
-	int ciclos = freqtimer / freq;
+	ciclos = freqtimer / freq;
+
 	TCNT0 = 0xFF - ciclos;
 	//TCNT0 = 0xF0;
 }
@@ -43,7 +47,7 @@ Milliseconds Timer::millis(){
 }
 
 Microseconds Timer::micros(){
-	return (_ticks * (1000000 / freq2));
+	return (_ticks * (1000000 / freq));
 }
 
 void Timer::delay(Milliseconds ms){
@@ -63,7 +67,8 @@ void Timer::udelay(Microseconds us){
 }
 
 void Timer::isr_handler(){
-	TCNT0 = 0xF0;
+	//TCNT0 = 0xF0;
+	TCNT0 = 0xFF - self()->ciclos;
 	_ticks++;
 }
 

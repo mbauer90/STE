@@ -15,7 +15,7 @@
 class Timer {
 public:
 
-	Timer(Hertz freq);
+	Timer(Hertz f);
 
 	Milliseconds millis();
 	Microseconds micros();
@@ -25,9 +25,13 @@ public:
 
 	static void isr_handler();
 
+	static Timer * self() { return __singleton; }
+
 private:
+	static Timer * __singleton;
 	static unsigned long long _ticks;
-	Hertz freq2;
+	Hertz freq;
+	int ciclos;
 };
 
 #endif /* TIMER_H_ */
