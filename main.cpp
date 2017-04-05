@@ -62,11 +62,52 @@ void loop(){
 
 }
 
+void teste_fila(FIFO<8,char> fila){
+	fila.push('a');
+	fila.push('b');
+	fila.push('c');
+	fila.push('d');
+	fila.push('e');
+	fila.push('f');
+	fila.push('g');
+	fila.push('h');
+	fila.push('i');
+	fila.push('j');
+
+		sprintf(message, "Letra 1: %c\n",fila.pop());
+		uart.puts(message);
+
+		sprintf(message, "Letra 2: %c\n",fila.pop());
+		uart.puts(message);
+
+		sprintf(message, "Letra 3: %c\n",fila.pop());
+		uart.puts(message);
+
+		sprintf(message, "Letra 4: %c\n",fila.pop());
+		uart.puts(message);
+
+		sprintf(message, "Letra 5 : %c\n",fila.pop());
+		uart.puts(message);
+
+		sprintf(message, "Letra 6: %c\n",fila.pop());
+		uart.puts(message);
+
+		sprintf(message, "Letra 7: %c\n",fila.pop());
+		uart.puts(message);
+
+		sprintf(message, "Letra 8: %c\n",fila.pop());
+		uart.puts(message);
+}
+
 int main(){
+
+	FIFO<8,char> queue;
+
 	setup();
 
 	while(true){
-		loop();
+		//loop();
+		teste_fila(queue);
 	}
 }
 

@@ -9,20 +9,24 @@
 #define FIFO_H_
 
 
-template <int Q_SIZE>
+template <int Q_SIZE,typename T>
 class FIFO {
 public:
 	FIFO(){
 		_head = 0;
 		_tail = 0;
+		_tamanho = 0;
 	}
 
 	~FIFO() {}
 
-	void push(char value){
-		if(((_tail+1) % Q_SIZE) == _head) return;
+	void push(T value){
+		//if(((_tail+1) % Q_SIZE) == _head) return;
+
+		if(size() == Q_SIZE) return;
 
 		_buffer[_tail] = value;
+		_tamanho++;
 
 		if(_tail == Q_SIZE){
 			_tail = 0;
@@ -31,10 +35,11 @@ public:
 		}
 	}
 
-	char pop(){
+	T pop(){
 		if(_tail==_head) return 0;
 
-		char returnval = _buffer[_head];
+		T returnval = _buffer[_head];
+		_tamanho--;
 
 			if(_head == Q_SIZE){
 				_head = 0;
@@ -47,9 +52,13 @@ public:
 
 	}
 
+	int size(){
+		return _tamanho;
+	}
+
 private:
-	int _head, _tail;
-	char _buffer[Q_SIZE];
+	int _head, _tail, _tamanho;
+	T _buffer[Q_SIZE];
 };
 
 #endif /* FIFO_H_ */
