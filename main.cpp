@@ -37,77 +37,123 @@ void setup(){
 
 void loop(){
 	//uart.put('a');
-	//uart.put(uart.get() + 1);
+	uart.put(uart.get() + 1);
 
-	//if((PINB & (1<<PB4))) acende_led();
-	if(ler_botao()){
-		//printf("Acendendo led");
-		acende_led();
-	}
-	else{
-		//printf("Apagando led");
-		apaga_led();
-	}
-
-
-	//sprintf(message, "LED: %d\n",botao.get());
-	//uart.puts(message);
-	//_delay_ms(100);
+//	//if((PINB & (1<<PB4))) acende_led();
+//	if(ler_botao()){
+//		//printf("Acendendo led");
+//		acende_led();
+//	}
+//	else{
+//		//printf("Apagando led");
+//		apaga_led();
+//	}
 //
-	timer.delay(1000);
-	sprintf(message, "Timer: %d\n",timer.millis());
-	//sprintf(message, "Timer: %ull\n",timer.micros());
-	uart.puts(message);
-	//_delay_ms(100);
+//
+//	//sprintf(message, "LED: %d\n",botao.get());
+//	//uart.puts(message);
+//	//_delay_ms(100);
+////
+//	timer.delay(1000);
+//	sprintf(message, "Timer: %d\n",timer.millis());
+//	//sprintf(message, "Timer: %ull\n",timer.micros());
+//	uart.puts(message);
+//	//_delay_ms(100);
 
 }
 
-void teste_fila(FIFO<8,char> fila){
-	fila.push('a');
-	fila.push('b');
-	fila.push('c');
-	fila.push('d');
-	fila.push('e');
-	fila.push('f');
-	fila.push('g');
-	fila.push('h');
-	fila.push('i');
-	fila.push('j');
+static const int MAX = 4;
+typedef FIFO<MAX,char> MyFIFO;
+MyFIFO fifo_test;
 
-		sprintf(message, "Letra 1: %c\n",fila.pop());
-		uart.puts(message);
+void teste_fila(){
+	char x = 0, y = 0;
 
-		sprintf(message, "Letra 2: %c\n",fila.pop());
-		uart.puts(message);
+	uart.puts("Test 1: insert/remove 1.\r\n");
+	//fifo_test.clear();
 
-		sprintf(message, "Letra 3: %c\n",fila.pop());
-		uart.puts(message);
+	uart.puts("\t Push A. ");
+	fifo_test.push('A');
+	uart.puts(" => OK.\r\n");
 
-		sprintf(message, "Letra 4: %c\n",fila.pop());
-		uart.puts(message);
+	uart.puts("\t Pop: ");
+	x = fifo_test.pop();
+	uart.put(x);
+	if(x == 'A') uart.puts(". => OK.\r\n");
+	else uart.puts(". => NOK.\r\n");
 
-		sprintf(message, "Letra 5 : %c\n",fila.pop());
-		uart.puts(message);
 
-		sprintf(message, "Letra 6: %c\n",fila.pop());
-		uart.puts(message);
+	uart.puts("Test 2: insert/remove MAX.\r\n");
+	//fifo_test.clear();
 
-		sprintf(message, "Letra 7: %c\n",fila.pop());
-		uart.puts(message);
+	x = 'A';
+	for (int i = 0; i < MAX; i++) {
+		uart.puts("\t Push ");
+		uart.put(x);
+		uart.puts(". ");
+		fifo_test.push(x);
+		uart.puts(" => OK.\r\n");
+		x++;
+	}
 
-		sprintf(message, "Letra 8: %c\n",fila.pop());
-		uart.puts(message);
+	y = 'A';
+	for (int i = 0; i < MAX; i++) {
+		uart.puts("\t Pop: ");
+		x = fifo_test.pop();
+		uart.put(x);
+		if(x == y) uart.puts(". => OK.\r\n");
+		else uart.puts(". => NOK.\r\n");
+		y++;
+	}
+
+
+	uart.puts("Test 3: remove from empty.\r\n");
+	//fifo_test.clear();
+
+	for (int i = 0; i < MAX; i++) {
+		uart.puts("\t Pop: ");
+		x = fifo_test.pop();
+		if(x == (char)MyFIFO::FIFO_ERROR_EMPTY) uart.puts(". => OK.\r\n");
+		else uart.puts(". => NOK.\r\n");
+	}
+
+	uart.puts("Test 4: insert in full.\r\n");
+	//fifo_test.clear();
+
+	x = 'A';
+	for (int i = 0; i < MAX; i++) {
+		uart.puts("\t Push ");
+		uart.put(x);
+		uart.puts(". ");
+		fifo_test.push(x);
+		uart.puts(" => OK.\r\n");
+		x++;
+	}
+
+	uart.puts("\t Add extra item: ");
+	x = fifo_test.push('X');
+	if(x == (char)MyFIFO::FIFO_ERROR_FULL) uart.puts(". => OK.\r\n");
+	else uart.puts(". => NOK.\r\n");
+
+	y = 'A';
+	for (int i = 0; i < MAX; i++) {
+		uart.puts("\t Pop: ");
+		x = fifo_test.pop();
+		uart.put(x);
+		if(x == y) uart.puts(". => OK.\r\n");
+		else uart.puts(". => NOK.\r\n");
+		y++;
+	}
+
+	timer.delay(10000);
 }
 
 int main(){
-
-	FIFO<8,char> queue;
-
 	setup();
 
 	while(true){
-		//loop();
-		teste_fila(queue);
+		loop();
+		//teste_fila();
 	}
 }
 

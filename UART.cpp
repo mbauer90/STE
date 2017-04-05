@@ -7,10 +7,15 @@
 
 #include "UART.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
+
+UART * UART::__singletonUART  = 0;
 
 UART::UART(unsigned long bd, DataBits_t db, ParityBits_t pr, StopBits_t sb)
 : _baudrate(bd), _databits(db), _paridade(pr), _stopbits(sb)
 {
+	__singletonUART = this;
+
 	//Configura o baud_rate
 	UBRR0 = (F_CPU / (16ul * this->_baudrate)) -1;
 	//Liga TX e RX
@@ -35,6 +40,10 @@ UART::UART(unsigned long bd, DataBits_t db, ParityBits_t pr, StopBits_t sb)
 
 	//Configura o frame para 8N1
 	//UCSR0C = (3<<UCSZ00);
+
+//-------------------------------------------------------------------------------------------
+	 UCSR0A = 0X80; //Liga interrupcao de RX
+
 }
 
 //UART::~UART() {
@@ -50,9 +59,11 @@ void UART::put(unsigned char dado){
 
 unsigned char UART::get(){
 	//wait until dado is received
-	while(!(UCSR0A & (1<<RXC0)));
+	//while(!(UCSR0A & (1<<RXC0)));
 	//Retorna dado
-	return UDR0;
+	//return UDR0;
+	while(_rx_fifo.size() == 0);
+	return _rx_fifo.pop();
 }
 
 void  UART::puts(const char * str){
@@ -61,3 +72,13 @@ void  UART::puts(const char * str){
 		str++;
 	}
 }
+
+void UART::isr_handler(){
+	self()->_rx_fifo.push(UDR0);
+}
+
+ISR(USART_RX_vect){
+	UART::isr_handler();
+}
+
+

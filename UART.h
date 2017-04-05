@@ -42,13 +42,19 @@ public:
 	unsigned char get();
 	void puts(const char * str);
 
+	static void isr_handler();
+
+	static UART * self() { return __singletonUART; }
+
 private:
+	static UART * __singletonUART;
 	unsigned long _baudrate;
 	DataBits_t _databits;
 	ParityBits_t _paridade;
 	StopBits_t _stopbits;
 
 	FIFO<8,char> _tx_fifo;
+	FIFO<8,char> _rx_fifo;
 };
 
 #endif /* UART_H_ */

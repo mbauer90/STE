@@ -12,6 +12,9 @@
 template <int Q_SIZE,typename T>
 class FIFO {
 public:
+	static const unsigned int FIFO_ERROR_EMPTY = -1;
+	static const unsigned int FIFO_ERROR_FULL = -2;
+
 	FIFO(){
 		_head = 0;
 		_tail = 0;
@@ -20,10 +23,10 @@ public:
 
 	~FIFO() {}
 
-	void push(T value){
+	int push(T value){
 		//if(((_tail+1) % Q_SIZE) == _head) return;
 
-		if(size() == Q_SIZE) return;
+		if(size() == Q_SIZE) return FIFO_ERROR_FULL;
 
 		_buffer[_tail] = value;
 		_tamanho++;
@@ -36,7 +39,7 @@ public:
 	}
 
 	T pop(){
-		if(_tail==_head) return 0;
+		if(_tail==_head) return FIFO_ERROR_EMPTY;
 
 		T returnval = _buffer[_head];
 		_tamanho--;
@@ -48,7 +51,6 @@ public:
 			}
 
 		return returnval;
-
 
 	}
 
