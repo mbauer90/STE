@@ -42,7 +42,7 @@ UART::UART(unsigned long bd, DataBits_t db, ParityBits_t pr, StopBits_t sb)
 	//UCSR0C = (3<<UCSZ00);
 
 //-------------------------------------------------------------------------------------------
-	 UCSR0A = 0X80; //Liga interrupcao de RX
+	 UCSR0B |= 0X80; //Liga interrupcao de RX
 
 }
 
@@ -52,9 +52,12 @@ UART::UART(unsigned long bd, DataBits_t db, ParityBits_t pr, StopBits_t sb)
 
 void UART::put(unsigned char dado){
 	//wait until UDR0 is empty
-	while(!(UCSR0A & (1<<UDRE0)));
+//	while(!(UCSR0A & (1<<UDRE0)));
 	//Envia o dado
-	UDR0 = dado;
+//	UDR0 = dado;
+
+	self()->_tx_fifo.push(dado);
+	 UCSR0B |= 0X20; //Liga interrupcao de TX
 }
 
 unsigned char UART::get(){
@@ -62,8 +65,8 @@ unsigned char UART::get(){
 	//while(!(UCSR0A & (1<<RXC0)));
 	//Retorna dado
 	//return UDR0;
-	while(_rx_fifo.size() == 0);
-	return _rx_fifo.pop();
+	while(self()->_rx_fifo.size() == 0);
+	return self()->_rx_fifo.pop();
 }
 
 void  UART::puts(const char * str){
@@ -73,12 +76,24 @@ void  UART::puts(const char * str){
 	}
 }
 
-void UART::isr_handler(){
+void UART::isr_rx_handler(){
 	self()->_rx_fifo.push(UDR0);
 }
 
-ISR(USART_RX_vect){
-	UART::isr_handler();
+void UART::isr_tx_handler(){
+	if(self()->_tx_fifo.size()!=0){
+		UDR0 = self()->_tx_fifo.pop();
+	}
+	else {
+		 UCSR0B &= ~0X20; //Desliga interrupcao de TX
+	}
 }
 
+ISR(USART_RX_vect){
+	UART::isr_rx_handler();
+}
+
+ISR(USART_UDRE_vect){
+	UART::isr_tx_handler();
+}
 

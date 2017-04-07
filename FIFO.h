@@ -39,7 +39,8 @@ public:
 	}
 
 	T pop(){
-		if(_tail==_head) return FIFO_ERROR_EMPTY;
+		//if(_tail==_head) return FIFO_ERROR_EMPTY;
+		if(_tamanho==0) return FIFO_ERROR_EMPTY;
 
 		T returnval = _buffer[_head];
 		_tamanho--;

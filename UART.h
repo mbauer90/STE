@@ -42,7 +42,8 @@ public:
 	unsigned char get();
 	void puts(const char * str);
 
-	static void isr_handler();
+	static void isr_rx_handler();
+	static void isr_tx_handler();
 
 	static UART * self() { return __singletonUART; }
 
