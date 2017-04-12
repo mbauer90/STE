@@ -9,7 +9,7 @@
 #define FIFO_H_
 
 
-template <int Q_SIZE,typename T>
+template<int Q_SIZE,typename T>
 class FIFO {
 public:
 	static const unsigned int FIFO_ERROR_EMPTY = -1;
@@ -59,7 +59,7 @@ public:
 		return _tamanho;
 	}
 
-private:
+protected:
 	int _head, _tail, _tamanho;
 	T _buffer[Q_SIZE];
 };
