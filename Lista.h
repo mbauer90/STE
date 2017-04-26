@@ -17,7 +17,7 @@ private:
 	typedef FIFO<Q_SIZE,T> Base;
 public:
 
-	int search(int valor){
+	int search(T valor){
 		int pos = Base::_head;
 
 		while(pos < Base::_tamanho){

@@ -7,20 +7,26 @@
 #include "Timer.h"
 #include "FIFO.h"
 #include "UserManager.h"
+#include "RFIDreader.h"
 
 Timer timer(1000);
 UART uart(19200,UART::DATABITS_8,UART::PARITY_NONE,UART::STOPBITS_1);
 
+
+GPIO botao_apaga_cadastros(9,GPIO::INPUT);
 GPIO botao_cadastro(10,GPIO::INPUT);
 GPIO led(11,GPIO::OUTPUT);
 GPIO botao_fechadura(12,GPIO::INPUT);
 
+
 User_Manager usuarios;
+RFIDreader leitorRFID;
 
 void abre_porta(){
 	led.set(true);
 	timer.delay(2000);
 	led.set(false);
+	timer.delay(500);
 }
 
 bool ler_botao_fechadura(){
@@ -31,54 +37,50 @@ bool ler_botao_cadastro(){
 	return botao_cadastro.get();
 }
 
+bool ler_botao_apaga_cadastros(){
+	return botao_apaga_cadastros.get();
+}
+
 void setup(){
 	sei();
 }
 
 void cadastra_usuario(){
-
+	usuarios.cadastra_usuario(leitorRFID.get());
 }
 
 void loop(){
-	if(!ler_botao_fechadura()){
+
+	if(ler_botao_fechadura()){
 		abre_porta();
 	}
 
-//	if(!ler_botao_cadastro()){
-//		cadastra_usuario();
-//	}
-}
+	if(ler_botao_cadastro()){
+		cadastra_usuario();
+	}
 
-//void teste_lista(){
-//	char message[32];
-//
-//	sprintf(message, "%d\n",list_usuario.get(0));
-//	uart.puts(message);
-//
-//	timer.delay(1000);
-//}
+	if(ler_botao_apaga_cadastros()){
+		usuarios.apaga_tudo();
+	}
+
+	//RFID CONSULTANDO (PROFESSOR)
+	if(usuarios.consulta_usuario(0xABCDEF12) >= 0){
+		abre_porta();
+	}
+
+
+}
 
 int main(){
-//	char message[8];
+	//char message[8];
 
 	setup();
-//
-//	usuarios.cadastra_usuario(12);
-//	usuarios.cadastra_usuario(13);
-//
-//	usuarios.apaga_tudo();
-//	usuarios.cadastra_usuario(14);
 
 	while(true){
-		//loop();
-//		sprintf(message, "%d\n",usuarios.consulta_usuario(13));
-//		uart.puts(message);
-//		timer.delay(1000);
-//		sprintf(message, "%d\n",usuarios.consulta_usuario(14));
-//		uart.puts(message);
-//		timer.delay(1000);
+		loop();
 	}
 }
+
 
 
 
