@@ -11,7 +11,7 @@
 class RFIDreader {
 public:
 	RFIDreader();
-	unsigned long int get();
+	unsigned long long int get();
 };
 
 #endif /* RFIDREADER_H_ */

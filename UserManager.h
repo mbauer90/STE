@@ -13,8 +13,8 @@ public:
 	User_Manager();
 	//~User_Manager();
 
-	void cadastra_usuario(unsigned long int valor);
-	int consulta_usuario(unsigned long int valor);
+	void cadastra_usuario(unsigned long long int valor);
+	int consulta_usuario(unsigned long long int valor);
 	void apaga_tudo();
 };
 

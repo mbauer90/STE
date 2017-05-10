@@ -12,8 +12,8 @@ RFIDreader::RFIDreader() {
 
 }
 
-unsigned long int RFIDreader::get(){
-	return 0xABCDEF12;
+unsigned long long int RFIDreader::get(){
+	return 0xABCDEF12ABCDEF12;
 	//return 12;
 }
 
