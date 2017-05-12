@@ -16,8 +16,8 @@ public:
 	void aciona();
 private:
 	GPIO _buzzer_out;
-	int _frequencia;
-	int _miliseconds;
+	long int _frequencia;
+	long int _miliseconds;
 };
 
 #endif /* BUZZER_H_ */

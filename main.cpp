@@ -21,11 +21,14 @@ GPIO botao_fechadura(12,GPIO::INPUT);
 User_Manager usuarios;
 RFIDreader leitorRFID;
 
-Buzzer buzzer_porta(15,10000,1000);
+Buzzer buzzer_porta(8,1000,400);
+Buzzer buzzer_porta2(8,10000,300);
 
 void abre_porta(){
 
 	buzzer_porta.aciona(); //Som
+	timer.delay(100);
+	buzzer_porta2.aciona(); //Som
 	led.set(true);
 	timer.delay(2000);
 	led.set(false);
@@ -50,6 +53,10 @@ void setup(){
 
 void cadastra_usuario(){
 	usuarios.cadastra_usuario(leitorRFID.get());
+}
+
+void faz_som(){
+
 }
 
 void loop(){
