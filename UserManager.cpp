@@ -15,7 +15,7 @@ User_Manager::User_Manager() {
 }
 
 void User_Manager::cadastra_usuario(unsigned long long int valor){
-	if(consulta_usuario(valor) < 0){
+	if(consulta_usuario(valor) < 0 and valor != 0){
 		list_usuario.push(valor);
 	}
 }
