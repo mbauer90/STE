@@ -15,8 +15,7 @@
 Timer timer(1000);
 UART uart(19200,UART::DATABITS_8,UART::PARITY_NONE,UART::STOPBITS_1);
 
-Buzzer buzzer_porta(8,1000,400);
-Buzzer buzzer_porta2(8,10000,300);
+Buzzer buzzer_porta(8,10000,300);
 
 GPIO botao_apaga_cadastros(7,GPIO::INPUT);
 GPIO botao_fechadura(12,GPIO::INPUT);
@@ -35,8 +34,6 @@ RDM6300<UART1> leitorRFID(&uart1);
 void abre_porta(){
 
 	buzzer_porta.aciona(); //Som
-	timer.delay(100);
-	buzzer_porta2.aciona(); //Som
 	led_verde.set(true);
 	rele.set(true);			//Ativa Rele
 	led_vermelho.set(false);
@@ -84,6 +81,7 @@ void faz_som(){
 
 void loop(){
 	static unsigned long long id_atual = 0;
+	id_atual = 0;
 
 	while(uart1.has_data()) {
 		leitorRFID.parse(uart1.get());
@@ -91,6 +89,11 @@ void loop(){
 			id_atual = leitorRFID.get_id();
 	}
 
+	if(usuarios.consulta_usuario(id_atual) >= 0){
+		abre_porta();
+		id_atual = 0;
+		uart1.apagafilas(); 	//Esvaziar uart para não abrir a porta 2 vezes
+	}
 //	if(id_atual) {
 //		char buffer[32];
 //		union {
@@ -109,12 +112,16 @@ void loop(){
 	}
 
 	if(ler_botao_cadastro()){
-		cadastra_usuario();
-	}
+		led_verde.set(true);
+		led_vermelho.set(true);
 
-	if(usuarios.consulta_usuario(id_atual) >= 0){
-		abre_porta();
-		id_atual = 0;
+		for(int i=0; i < 30; i++){
+			cadastra_usuario();
+			timer.delay(100);
+		}
+
+		led_verde.set(false);
+		led_vermelho.set(false);
 	}
 
 	if(ler_botao_apaga_cadastros()){

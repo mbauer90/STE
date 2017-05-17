@@ -12,6 +12,7 @@
 
 #include "Singleton.h"
 #include "FIFO.h"
+#include "Lista.h"
 
 class UART1 : public Singleton<UART1> {
 public:
@@ -46,6 +47,11 @@ public:
 	unsigned char get();
 	void puts(const char * str);
 
+	void apagafilas(){
+		_rx_fifo.apaga_lista();
+		_tx_fifo.apaga_lista();
+	}
+
 	static void rxc_isr_handler();
 	static void udre_isr_handler();
 
@@ -55,7 +61,7 @@ private:
 	ParityBits_t _parity;
 	StopBits_t _stopbits;
 
-	typedef FIFO<16,char> UART_FIFO;
+	typedef Lista<16,char> UART_FIFO;
 	UART_FIFO _rx_fifo;
 	UART_FIFO _tx_fifo;
 };
